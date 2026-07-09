@@ -1,133 +1,55 @@
-# PRD: 数据集下载与样本准备
+# PRD: dataset download and manifests
 
-## 背景
+## Purpose
 
-本实验需要一个可复现的人脸数据集，用于对比 HOG/dlib 与 InsightFace 预训练推理路线在人脸检测、向量编码、检索和聚类任务中的表现。首选 CelebA 已对齐图片集，也可保留少量未对齐或复杂姿态图片用于检测鲁棒性测试。
+The dataset step prepares the aligned CelebA face images and the metadata needed by every later experiment. The output is not just a folder of images. It is a set of manifest files that tell the other scripts where each image is, which identity it belongs to, and which experiment split should use it.
 
-## 目标
+## Goals
 
-- 下载或接入 CelebA 数据集。
-- 建立统一的数据目录结构。
-- 将全量 CelebA 图片纳入主实验流程。
-- 允许额外生成小规模 debug subset，但 debug subset 只能用于快速验证，不能替代主实验。
-- 生成身份标签、图片清单与实验 split。
-- 保留正常正脸、侧脸、歪头、强光、暗光、遮挡等样本类型。
-- 确保全量数据都有明确去向，不保留一大块完全未使用图片。
+- Download or reuse the full CelebA aligned image dataset.
+- Add the CelebA identity annotation when the image package does not include it.
+- Generate full dataset manifests for images, identities, splits, and quality tags.
+- Make sure every usable image has a clear destination.
+- Keep debug subsets separate from the full experiment.
 
-## 非目标
+## Inputs
 
-- 不在本 PRD 中训练模型。
-- 不在本 PRD 中做向量检索。
-- 不在本 PRD 中做聚类或可视化。
+- `data/raw/celeba/img_align_celeba/img_align_celeba/`
+- `data/raw/celeba/identity_CelebA.txt`
+- optional CelebA files such as attributes, bounding boxes, landmarks, and original split files
 
-## 输入
+## Outputs
 
-- `img_align_celeba.zip`
-- CelebA identity annotation 文件，例如 `identity_CelebA.txt`
-- 可选属性文件，例如 `list_attr_celeba.txt`
-- 可选 bbox 文件，例如 `list_bbox_celeba.txt`
-
-## 输出
-
-- `data/raw/celeba/`
-- `data/processed/celeba_subset/`
-- `data/processed/celeba_full/`
 - `data/manifests/images.csv`
 - `data/manifests/identities.csv`
 - `data/manifests/splits.csv`
 - `data/manifests/quality_tags.csv`
-- `data/scripts/download_celeba.py`
-- `data/scripts/prepare_celeba_manifests.py`
 
-## 目录建议
+The generated CSV files are ignored by git because they are local experiment outputs.
 
-```text
-data/
-  raw/
-    celeba/
-      img_align_celeba/
-      identity_CelebA.txt
-  processed/
-    celeba_full/
-      gallery/
-      query_known/
-      query_unknown/
-      cluster_mix/
-    celeba_subset/
-      debug/
-  manifests/
-    images.csv
-    identities.csv
-    splits.csv
-    quality_tags.csv
-data/scripts/
-  download_celeba.py
-  prepare_celeba_manifests.py
-```
+## Scripts
 
-## 脚本要求
+The dataset scripts live under `data/scripts/`:
 
-下载与准备流程必须写成可复用脚本文件：
+- `download_celeba.py` downloads or copies the image package and can extract it.
+- `download_celeba_identity.py` downloads the identity annotation and normalizes it to `identity_CelebA.txt`.
+- `prepare_celeba_manifests.py` scans the full dataset and writes the manifest CSV files.
 
-- `data/scripts/download_celeba.py`
-- `data/scripts/prepare_celeba_manifests.py`
+The scripts are files on disk. They are not one line `python -c` commands, so the dataset setup can be reviewed and repeated.
 
-禁止把核心流程写成：
+## Split meaning
 
-```bash
-python -c "..."
-```
+- `gallery` contains the reference images used to build the identity database.
+- `query_known` contains other images of identities already present in the gallery.
+- `query_unknown` contains identities that do not appear in the gallery.
+- `cluster_mix` is available for grouping experiments when labels are not used.
 
-原因：
+The identity file is what makes `gallery`, `query_known`, and `query_unknown` possible. Without it, the project can still cluster embeddings, but it cannot measure known identity lookup or unknown rejection correctly.
 
-- `python -c` 不利于复现。
-- 不方便记录参数和日志。
-- 不方便后续扩展断点续传、校验、重跑与错误恢复。
+## Acceptance criteria
 
-## 核心流程
-
-1. 校验数据文件是否存在。
-2. 解压图片集到 `data/raw/celeba/img_align_celeba/`。
-3. 读取 identity annotation，建立 `image_id -> person_id` 映射。
-4. 按 person_id 统计每个人图片数量。
-5. 对全量图片做合法性检查。
-6. 将全量图片划分到 gallery、query_known、query_unknown、cluster_mix 等 split。
-7. 可选额外生成 debug subset，用于脚本 smoke test。
-8. 生成 manifest CSV。
-9. 对异常图片、损坏图片、非 RGB 图片做记录。
-10. 输出 split 统计，确认没有大规模未使用数据。
-
-所有扫描、校验、解压后索引和 manifest 生成步骤必须使用 `tqdm` 展示进度。
-
-## Split 设计
-
-- `gallery`: 用于建立基准向量库。
-- `query_known`: 数据库中已有身份的新图片，用于熟人检索。
-- `query_unknown`: 数据库外身份图片，用于陌生人拒识。
-- `cluster_mix`: 混合图片集合，用于 DBSCAN 无监督聚类。
-- `debug`: 小规模快速验证集合，只能用于开发调试和 smoke test。
-
-## 全量数据使用原则
-
-- 主实验以全量 CelebA 为准。
-- 全量图片必须被分配到某个主 split，或者被记录为明确排除原因。
-- 排除原因必须写入 manifest，例如损坏、非图片、缺失标签、无法读取。
-- debug subset 可以从全量 split 中派生，但不能让全量主实验缺席。
-- benchmark 报告必须明确标注结果来自 full dataset 还是 debug subset。
-
-## 验收标准
-
-- 可以通过 manifest 找到每一张图片的本地路径。
-- 每张图片有稳定的 `image_id`。
-- 每张已知身份图片有 `person_id`。
-- `query_unknown` 中的身份不出现在 `gallery`。
-- split 脚本固定随机种子，保证可复现。
-- 全量图片要么进入主实验 split，要么有明确排除原因。
-- 下载和 manifest 生成逻辑以脚本文件形式存在，不依赖 `python -c`。
-
-## 风险
-
-- CelebA 下载地址可能需要手动授权或镜像。
-- 图片数量过大时，解压和扫描耗时较长。
-- 未对齐原图可能缺少统一 bbox，需要额外检测流程。
-- 全量实验耗时明显高于 debug subset，需要支持断点续跑与进度日志。
+- The manifest contains the full aligned image set.
+- The split summary reports gallery, known query, and unknown query counts when identity labels are available.
+- The zip files used for download are removed after extraction unless debugging requires keeping them.
+- Kaggle credentials never enter the repository.
+- The output can be used by HOG, ArcFace, FAISS, DBSCAN, and the final report.

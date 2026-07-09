@@ -1,0 +1,70 @@
+site_name: Facial Recognition
+site_description: Face recognition experiments with ArcFace, HOG, FAISS, and DBSCAN.
+site_url: https://bizi.github.io/Facial-Recognition/
+repo_name: bizi/Facial-Recognition
+repo_url: https://github.com/bizi/Facial-Recognition
+edit_uri: edit/main/
+
+docs_dir: docs
+site_dir: site
+exclude_docs: |
+  zh/project/*.zh.md
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.top
+    - navigation.sections
+    - navigation.footer
+    - content.code.copy
+
+extra:
+  alternate:
+    - name: English
+      link: /Facial-Recognition/
+      lang: en
+    - name: 中文
+      link: /Facial-Recognition/zh/
+      lang: zh
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/bizi/Facial-Recognition
+      name: GitHub
+
+plugins:
+  - search
+  - i18n:
+      docs_structure: folder
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: zh
+          name: 中文
+          build: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - GitHub: https://github.com/bizi/Facial-Recognition
+  - Specifications:
+      - Overview: spec/index.md
+      - Dataset: spec/01_dataset_download_prd.md
+      - HOG baseline: spec/02_hog_face_recognition_prd.md
+      - ArcFace: spec/03_insightface_mac_prd.md
+      - FAISS search: spec/04_faiss_search_prd.md
+      - DBSCAN visualization: spec/05_dbscan_2d_visualization_prd.md
+      - Benchmark report: spec/06_benchmark_report_prd.md
+  - Project:
+      - MkDocs site PRD: project/mkdocs_prd.md
+      - GitHub Actions PRD: project/github_action_prd.md

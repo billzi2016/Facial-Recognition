@@ -1,117 +1,77 @@
 # Facial Recognition
 
-## 项目定位
+Documentation site: https://bizi.github.io/Facial-Recognition/
 
-本项目当前只做 **ArcFace 人脸特征提取、FAISS 检索、DBSCAN 聚类与可视化分析**。
+This project builds a face recognition lab around aligned CelebA face images. The main path extracts ArcFace embeddings, stores them in HDF5, searches them with FAISS, and groups them with DBSCAN. The HOG/dlib path runs as a baseline through the same FAISS and DBSCAN steps so the report can compare both routes.
 
-当前前提是：输入数据已经完成了人脸检测、裁剪或对齐，因此主流程不再重复做人脸检测。
+The input images are already aligned faces, so the main workflow does not need a separate face detector. RetinaFace or SCRFD can be added later if the project starts from raw, undetected images.
 
-也就是说，当前主线不是：
+## What the project does
 
-```text
-原图 -> RetinaFace 检测 -> ArcFace 编码
-```
+The project turns each aligned face image into a numeric identity vector. Those vectors are then used for lookup and grouping:
 
-而是：
+- ArcFace creates 512 dimensional embeddings for the main workflow.
+- FAISS searches the embedding database for known and unknown identities.
+- DBSCAN groups unlabeled face photos into clusters.
+- PCA, t-SNE, and UMAP provide two dimensional views of the clusters.
+- HOG and dlib run as a CPU baseline. They use the same downstream FAISS and DBSCAN experiments, which makes the comparison measurable rather than anecdotal.
 
-```text
-已检测/已对齐人脸图
-  -> ArcFace 提取 512 维 embedding
-  -> FAISS 1:N 检索
-  -> DBSCAN 无监督聚类
-  -> PCA / t-SNE / UMAP 2D JPG 可视化
-```
+## Dataset
 
-## 为什么当前只用 ArcFace
+The dataset scripts live under `data/scripts/`.
 
-RetinaFace 的作用是找脸，ArcFace 的作用是认人。
-
-本项目现在已经有可用的人脸输入，所以当前阶段只需要 ArcFace：
-
-- 提取 512 维身份向量。
-- 建立全量人脸向量库。
-- 使用 FAISS 做熟人检索与陌生人拒识。
-- 使用 DBSCAN 做智能相册式无监督聚类。
-- 使用 PCA、t-SNE、UMAP 输出 2D 染色图。
-
-## 实验模块
-
-详细 PRD 在 [spec/](spec/) 目录。
-
-当前核心模块：
-
-- 数据集准备：全量数据进入实验 split，不保留大块未使用数据。
-- ArcFace 编码：使用预训练模型做 inference，不训练模型。
-- FAISS 检索：只使用 FAISS，不使用 pgvector。
-- DBSCAN 聚类：对 ArcFace embedding 做无监督聚类。
-- 2D 可视化：PCA、t-SNE、UMAP 三类图统一保存为 JPG。
-
-HOG/dlib 传统路线可以作为实验对照组保留在 spec 中，但不是当前主线。
-
-RetinaFace 或 SCRFD 检测路线只在后续需要处理未检测原图时再启用。
-
-## 数据集准备
-
-如果本机已经配置 Kaggle token，例如 `~/.kaggle/access_token`，可以先用 Kaggle CLI 下载 CelebA：
+Download and extract CelebA from Kaggle:
 
 ```bash
 python3 data/scripts/download_celeba.py --kaggle-dataset --extract
 ```
 
-也可以指定本地 zip：
-
-```bash
-python3 data/scripts/download_celeba.py --zip-path /path/to/img_align_celeba.zip --extract
-```
-
-生成全量 manifest：
-
-```bash
-python3 data/scripts/prepare_celeba_manifests.py
-```
-
-如果当前 Kaggle 主数据集缺少身份标注，可以补充 `identity_CelebA.txt`：
+Add identity labels when the main Kaggle package does not include them:
 
 ```bash
 python3 data/scripts/download_celeba_identity.py
 python3 data/scripts/prepare_celeba_manifests.py
 ```
 
-## HOG 对照实验
+The manifest files describe which images belong to gallery, known query, and unknown query splits. Generated data and manifests are ignored by git.
 
-HOG 对照组脚本位于：
+## ArcFace workflow
 
-```bash
-python3 experiments/hog/extract_hog_embeddings.py
-```
-
-该脚本默认使用 `CPU 总核心数 - 2` 个 worker 并行处理全量 manifest，固定给系统留两个核心，输出到 `outputs/hog/`。HOG embedding 使用 `h5py` 存储为 HDF5，并通过 `h5py.create_dataset(..., compression="gzip", compression_opts=1)` 在写入 dataset 时直接启用内置 gzip 压缩。
-
-## ArcFace 主实验
-
-ArcFace 主线脚本位于：
+Run the main embedding extractor:
 
 ```bash
 python3 experiments/insightface/extract_arcface_embeddings.py
 ```
 
-该脚本使用 InsightFace 预训练模型提取 512 维 embedding，优先使用 ONNX Runtime `CoreMLExecutionProvider`，不可用时 fallback 到 `CPUExecutionProvider`。ArcFace embedding 使用 `h5py` 存储为 HDF5，并通过 `h5py.create_dataset(..., compression="gzip", compression_opts=1)` 在写入 dataset 时直接启用内置 gzip 压缩。
+The script uses InsightFace with ONNX Runtime. On Apple Silicon it prefers `CoreMLExecutionProvider`, then falls back to CPU if needed. Embeddings are stored with `h5py` in HDF5 format using dataset level gzip compression:
 
-## 工程约束
+```python
+h5.create_dataset("embeddings", data=embeddings, compression="gzip", compression_opts=1)
+```
 
-- 下载、准备、编码、检索、聚类、绘图流程都要写成脚本文件，不能依赖 `python -c`。
-- 所有长任务必须使用 `tqdm` 展示进度、速度和粗略 ETA。
-- 绘图产物统一保存为 JPG，不使用 PNG。
-- 主实验使用全量数据集；debug subset 只能用于快速验证。
-- FAISS 是唯一向量检索方案。
+## HOG baseline
 
-## 输出目标
+Run the CPU baseline:
 
-最终实验应产出：
+```bash
+python3 experiments/hog/extract_hog_embeddings.py
+```
 
-- ArcFace 512 维 embedding。
-- FAISS index。
-- 熟人检索与陌生人拒识结果。
-- DBSCAN 聚类标签。
-- PCA / t-SNE / UMAP 三张 2D JPG 可视化图。
-- benchmark 报告。
+The HOG script leaves two CPU cores free by default and writes 128 dimensional dlib embeddings to HDF5 with the same gzip setting.
+
+## Shared FAISS and DBSCAN experiments
+
+FAISS search and DBSCAN clustering must run for both embedding sources:
+
+```text
+outputs/insightface/embeddings.h5
+outputs/hog/embeddings.h5
+```
+
+ArcFace is the main route because it is the model intended for the project. HOG is the baseline. Both routes produce their own search results, clustering results, plots, and report sections so the final benchmark can show what changes when the embedding model changes.
+
+## More documentation
+
+The full documentation source is in `docs-site/`. Chinese source documents use `.zh.md`; English files use the plain `.md` name.
+
+PRD files live in [spec/README.md](https://github.com/bizi/Facial-Recognition/blob/main/spec/README.md).
