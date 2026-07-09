@@ -1,0 +1,10 @@
+# 数据集下载与进度条
+kaggle
+tqdm
+
+# 向量与 HDF5 存储
+numpy
+h5py
+
+# HOG/dlib 对照实验
+face_recognition
