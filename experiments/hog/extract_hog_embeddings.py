@@ -4,7 +4,7 @@
 脚本意图：
 - 作为传统 CPU 对照组，使用 `face_recognition` 的 HOG 检测和 dlib 128 维编码。
 - 读取 `data/manifests/images.csv`，默认处理全量有效图片。
-- 使用本机 CPU 核心数的一半做多进程并行，避免把 Mac 桌面环境完全打满。
+- 使用 `CPU 总核心数 - 2` 做多进程并行，固定给系统和桌面环境留出两个核心。
 - 所有长任务使用 `tqdm` 展示进度、速度和粗略 ETA。
 - embedding 必须使用 `h5py` 存储为 HDF5，并在写入 dataset 时直接启用
   `compression="gzip", compression_opts=1`，不允许先写未压缩 H5 再外部 gzip。
@@ -424,7 +424,7 @@ def main() -> int:
 
     args = parse_args()
     cpu_count = os.cpu_count() or 2
-    worker_count = args.workers if args.workers is not None else max(1, cpu_count // 2)
+    worker_count = args.workers if args.workers is not None else max(1, cpu_count - 2)
     if worker_count < 1:
         raise ValueError("--workers must be >= 1")
 
@@ -440,7 +440,7 @@ def main() -> int:
     benchmark_extra = {
         "cpu_count": cpu_count,
         "worker_count": worker_count,
-        "worker_policy": "half_cpu" if args.workers is None else "manual_override",
+        "worker_policy": "cpu_count_minus_2" if args.workers is None else "manual_override",
         "manifest": str(args.manifest),
         "splits": args.splits,
         "limit": args.limit if args.limit is not None else "none",

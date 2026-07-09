@@ -58,7 +58,7 @@ HOG 对照组脚本位于：
 python3 experiments/hog/extract_hog_embeddings.py
 ```
 
-该脚本使用 CPU 半数 worker 并行处理全量 manifest，输出到 `outputs/hog/`。HOG embedding 使用 `h5py` 存储为 HDF5，并通过 `h5py.create_dataset(..., compression="gzip", compression_opts=1)` 在写入 dataset 时直接启用内置 gzip 压缩。
+该脚本默认使用 `CPU 总核心数 - 2` 个 worker 并行处理全量 manifest，固定给系统留两个核心，输出到 `outputs/hog/`。HOG embedding 使用 `h5py` 存储为 HDF5，并通过 `h5py.create_dataset(..., compression="gzip", compression_opts=1)` 在写入 dataset 时直接启用内置 gzip 压缩。
 
 ## 数据集准备
 
