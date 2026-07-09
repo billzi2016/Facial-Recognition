@@ -7,6 +7,10 @@ numpy
 h5py
 opencv-python
 onnxruntime
+faiss-cpu
+scikit-learn
+matplotlib
+umap-learn
 
 # HOG/dlib 对照实验
 face_recognition

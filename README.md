@@ -1,6 +1,6 @@
 # Facial Recognition
 
-Documentation site: https://bizi.github.io/Facial-Recognition/
+Documentation site: https://billzi2016.github.io/Facial-Recognition/
 
 This project builds a face recognition lab around aligned CelebA face images. The main path extracts ArcFace embeddings, stores them in HDF5, searches them with FAISS, and groups them with DBSCAN. The HOG/dlib path runs as a baseline through the same FAISS and DBSCAN steps so the report can compare both routes.
 
@@ -70,8 +70,27 @@ outputs/hog/embeddings.h5
 
 ArcFace is the main route because it is the model intended for the project. HOG is the baseline. Both routes produce their own search results, clustering results, plots, and report sections so the final benchmark can show what changes when the embedding model changes.
 
+FAISS search:
+
+```bash
+python3 experiments/faiss/run_faiss_experiment.py --route insightface
+python3 experiments/faiss/run_faiss_experiment.py --route hog
+```
+
+DBSCAN clustering and plots:
+
+```bash
+python3 experiments/dbscan/run_dbscan_experiment.py --route insightface
+python3 experiments/dbscan/run_dbscan_experiment.py --route hog
+```
+
+Experiment notes:
+
+- [experiments/faiss/README.md](https://github.com/billzi2016/Facial-Recognition/blob/main/experiments/faiss/README.md)
+- [experiments/dbscan/README.md](https://github.com/billzi2016/Facial-Recognition/blob/main/experiments/dbscan/README.md)
+
 ## More documentation
 
 The full documentation source is in `docs-site/`. Chinese source documents use `.zh.md`; English files use the plain `.md` name.
 
-PRD files live in [spec/README.md](https://github.com/bizi/Facial-Recognition/blob/main/spec/README.md).
+PRD files live in [spec/README.md](https://github.com/billzi2016/Facial-Recognition/blob/main/spec/README.md).

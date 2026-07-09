@@ -1,6 +1,6 @@
 # Facial Recognition
 
-文档站：https://bizi.github.io/Facial-Recognition/
+文档站：https://billzi2016.github.io/Facial-Recognition/
 
 ## 项目定位
 
@@ -38,7 +38,7 @@ RetinaFace 的作用是找脸，ArcFace 的作用是认人。
 
 ## 实验模块
 
-详细 PRD 在 [spec/README.zh.md](https://github.com/bizi/Facial-Recognition/blob/main/spec/README.zh.md)。
+详细 PRD 在 [spec/README.zh.md](https://github.com/billzi2016/Facial-Recognition/blob/main/spec/README.zh.md)。
 
 当前核心模块：
 
@@ -109,6 +109,25 @@ outputs/hog/embeddings.h5
 ```
 
 ArcFace 是主路线，HOG 是 baseline。两条路线都要产出检索结果、聚类结果、可视化图和报告小节。最终报告以 ArcFace 为主结论，用 HOG 结果说明深度学习 embedding 相对传统路线的收益。
+
+FAISS 检索：
+
+```bash
+python3 experiments/faiss/run_faiss_experiment.py --route insightface
+python3 experiments/faiss/run_faiss_experiment.py --route hog
+```
+
+DBSCAN 聚类与可视化：
+
+```bash
+python3 experiments/dbscan/run_dbscan_experiment.py --route insightface
+python3 experiments/dbscan/run_dbscan_experiment.py --route hog
+```
+
+分实验说明在：
+
+- [experiments/faiss/README.zh.md](https://github.com/billzi2016/Facial-Recognition/blob/main/experiments/faiss/README.zh.md)
+- [experiments/dbscan/README.zh.md](https://github.com/billzi2016/Facial-Recognition/blob/main/experiments/dbscan/README.zh.md)
 
 ## 工程约束
 

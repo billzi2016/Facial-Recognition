@@ -1,8 +1,8 @@
 site_name: Facial Recognition
 site_description: Face recognition experiments with ArcFace, HOG, FAISS, and DBSCAN.
-site_url: https://bizi.github.io/Facial-Recognition/
-repo_name: bizi/Facial-Recognition
-repo_url: https://github.com/bizi/Facial-Recognition
+site_url: https://billzi2016.github.io/Facial-Recognition/
+repo_name: billzi2016/Facial-Recognition
+repo_url: https://github.com/billzi2016/Facial-Recognition
 edit_uri: edit/main/
 
 docs_dir: docs
@@ -29,7 +29,7 @@ extra:
       lang: zh
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/bizi/Facial-Recognition
+      link: https://github.com/billzi2016/Facial-Recognition
       name: GitHub
 
 plugins:
@@ -56,7 +56,7 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - GitHub: https://github.com/bizi/Facial-Recognition
+  - GitHub: https://github.com/billzi2016/Facial-Recognition
   - Specifications:
       - Overview: spec/index.md
       - Dataset: spec/01_dataset_download_prd.md
@@ -65,6 +65,9 @@ nav:
       - FAISS search: spec/04_faiss_search_prd.md
       - DBSCAN visualization: spec/05_dbscan_2d_visualization_prd.md
       - Benchmark report: spec/06_benchmark_report_prd.md
+  - Experiments:
+      - FAISS search: experiments/faiss.md
+      - DBSCAN clustering: experiments/dbscan.md
   - Project:
       - MkDocs site PRD: project/mkdocs_prd.md
       - GitHub Actions PRD: project/github_action_prd.md
