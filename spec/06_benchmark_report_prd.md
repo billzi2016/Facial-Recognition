@@ -24,7 +24,7 @@
 - `outputs/faiss/benchmark.json`
 - `outputs/faiss/threshold_report.csv`
 - `outputs/dbscan/cluster_report.json`
-- `outputs/dbscan/*.png`
+- `outputs/dbscan/*.jpg`
 
 ## 输出
 
@@ -53,6 +53,8 @@
 - HOG PCA/t-SNE/UMAP 聚类图。
 - ArcFace PCA/t-SNE/UMAP 聚类图。
 - DBSCAN 噪声点样例图。
+
+所有报告图像统一引用 JPG 文件，不使用 PNG。
 
 ## 必须包含的表格
 

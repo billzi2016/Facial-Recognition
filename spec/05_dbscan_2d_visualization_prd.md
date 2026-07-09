@@ -29,12 +29,12 @@
 
 - `outputs/dbscan/hog_cluster_labels.csv`
 - `outputs/dbscan/mps_cluster_labels.csv`
-- `outputs/dbscan/hog_pca_2d.png`
-- `outputs/dbscan/hog_tsne_2d.png`
-- `outputs/dbscan/hog_umap_2d.png`
-- `outputs/dbscan/mps_pca_2d.png`
-- `outputs/dbscan/mps_tsne_2d.png`
-- `outputs/dbscan/mps_umap_2d.png`
+- `outputs/dbscan/hog_pca_2d.jpg`
+- `outputs/dbscan/hog_tsne_2d.jpg`
+- `outputs/dbscan/hog_umap_2d.jpg`
+- `outputs/dbscan/mps_pca_2d.jpg`
+- `outputs/dbscan/mps_tsne_2d.jpg`
+- `outputs/dbscan/mps_umap_2d.jpg`
 - `outputs/dbscan/cluster_report.json`
 
 ## 核心实现
@@ -72,6 +72,12 @@ ArcFace 512 维：
 1. PCA 2D scatter
 2. t-SNE 2D scatter
 3. UMAP 2D scatter
+
+图像格式：
+
+- 统一输出 JPG。
+- 不输出 PNG，避免全量实验图像文件过大。
+- JPG 保存时应记录质量参数，例如 `quality=90` 或项目约定值。
 
 染色规则：
 
