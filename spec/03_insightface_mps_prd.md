@@ -22,7 +22,7 @@ InsightFace 提供现代人脸检测与识别能力。实验路线使用 RetinaF
 
 - `data/manifests/images.csv`
 - `data/manifests/splits.csv`
-- `data/processed/celeba_subset/`
+- `data/processed/celeba_full/`
 
 ## 输出
 

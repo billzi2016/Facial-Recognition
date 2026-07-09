@@ -7,7 +7,7 @@
 ## PRD 文件列表
 
 1. [01_dataset_download_prd.md](01_dataset_download_prd.md)
-   - CelebA 数据集下载、抽样、目录结构、身份标签整理与数据清洗。
+   - CelebA 全量数据集下载、split、目录结构、身份标签整理与数据清洗。
 
 2. [02_hog_face_recognition_prd.md](02_hog_face_recognition_prd.md)
    - HOG CPU 人脸检测、dlib 128 维人脸编码、性能与漏检率评估。
