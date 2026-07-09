@@ -56,8 +56,21 @@ temp/
 # ==============================================================================
 # 数据集与本地原始资源
 # ==============================================================================
-data/raw/
-data/processed/
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/celeba/
+data/raw/celeba/*
+!data/raw/celeba/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+!data/processed/celeba_full/
+!data/processed/celeba_full/.gitkeep
+!data/processed/celeba_subset/
+!data/processed/celeba_subset/.gitkeep
+!data/processed/celeba_subset/debug/
+!data/processed/celeba_subset/debug/.gitkeep
+data/manifests/*
+!data/manifests/.gitkeep
 *.zip
 *.tar
 *.tar.gz

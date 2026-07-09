@@ -36,8 +36,8 @@
 - `data/manifests/identities.csv`
 - `data/manifests/splits.csv`
 - `data/manifests/quality_tags.csv`
-- `scripts/download_celeba.py`
-- `scripts/prepare_celeba_manifests.py`
+- `data/scripts/download_celeba.py`
+- `data/scripts/prepare_celeba_manifests.py`
 
 ## 目录建议
 
@@ -60,7 +60,7 @@ data/
     identities.csv
     splits.csv
     quality_tags.csv
-scripts/
+data/scripts/
   download_celeba.py
   prepare_celeba_manifests.py
 ```
@@ -69,8 +69,8 @@ scripts/
 
 下载与准备流程必须写成可复用脚本文件：
 
-- `scripts/download_celeba.py`
-- `scripts/prepare_celeba_manifests.py`
+- `data/scripts/download_celeba.py`
+- `data/scripts/prepare_celeba_manifests.py`
 
 禁止把核心流程写成：
 
