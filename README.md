@@ -87,6 +87,16 @@ python3 experiments/hog/extract_hog_embeddings.py
 
 该脚本默认使用 `CPU 总核心数 - 2` 个 worker 并行处理全量 manifest，固定给系统留两个核心，输出到 `outputs/hog/`。HOG embedding 使用 `h5py` 存储为 HDF5，并通过 `h5py.create_dataset(..., compression="gzip", compression_opts=1)` 在写入 dataset 时直接启用内置 gzip 压缩。
 
+## ArcFace 主实验
+
+ArcFace 主线脚本位于：
+
+```bash
+python3 experiments/insightface/extract_arcface_embeddings.py
+```
+
+该脚本使用 InsightFace 预训练模型提取 512 维 embedding，优先使用 ONNX Runtime `CoreMLExecutionProvider`，不可用时 fallback 到 `CPUExecutionProvider`。ArcFace embedding 使用 `h5py` 存储为 HDF5，并通过 `h5py.create_dataset(..., compression="gzip", compression_opts=1)` 在写入 dataset 时直接启用内置 gzip 压缩。
+
 ## 工程约束
 
 - 下载、准备、编码、检索、聚类、绘图流程都要写成脚本文件，不能依赖 `python -c`。
