@@ -70,6 +70,13 @@ python3 data/scripts/download_celeba.py --zip-path /path/to/img_align_celeba.zip
 python3 data/scripts/prepare_celeba_manifests.py
 ```
 
+如果当前 Kaggle 主数据集缺少身份标注，可以补充 `identity_CelebA.txt`：
+
+```bash
+python3 data/scripts/download_celeba_identity.py
+python3 data/scripts/prepare_celeba_manifests.py
+```
+
 ## 工程约束
 
 - 下载、准备、编码、检索、聚类、绘图流程都要写成脚本文件，不能依赖 `python -c`。
