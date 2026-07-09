@@ -28,9 +28,9 @@
 ## 输出
 
 - `outputs/faiss/hog_128.index`
-- `outputs/faiss/mps_512.index`
+- `outputs/faiss/insightface_512.index`
 - `outputs/faiss/hog_search_results.csv`
-- `outputs/faiss/mps_search_results.csv`
+- `outputs/faiss/insightface_search_results.csv`
 - `outputs/faiss/threshold_report.csv`
 - `outputs/faiss/benchmark.json`
 
@@ -59,6 +59,8 @@ IndexFlatIP
 5. 读取 `query_unknown` 执行陌生人拒识。
 6. 对不同阈值进行扫描。
 7. 输出 Top-K 命中率、错误匹配样本和拒识结果。
+
+索引构建、query 检索和阈值扫描都必须使用 `tqdm` 展示进度。
 
 ## 阈值建议
 

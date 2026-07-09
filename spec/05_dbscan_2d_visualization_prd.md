@@ -28,13 +28,13 @@
 ## 输出
 
 - `outputs/dbscan/hog_cluster_labels.csv`
-- `outputs/dbscan/mps_cluster_labels.csv`
+- `outputs/dbscan/insightface_cluster_labels.csv`
 - `outputs/dbscan/hog_pca_2d.jpg`
 - `outputs/dbscan/hog_tsne_2d.jpg`
 - `outputs/dbscan/hog_umap_2d.jpg`
-- `outputs/dbscan/mps_pca_2d.jpg`
-- `outputs/dbscan/mps_tsne_2d.jpg`
-- `outputs/dbscan/mps_umap_2d.jpg`
+- `outputs/dbscan/insightface_pca_2d.jpg`
+- `outputs/dbscan/insightface_tsne_2d.jpg`
+- `outputs/dbscan/insightface_umap_2d.jpg`
 - `outputs/dbscan/cluster_report.json`
 
 ## 核心实现
@@ -64,6 +64,8 @@ ArcFace 512 维：
 - `min_samples`: `3` 到 `5`
 
 参数必须做扫描，不能只跑单点。
+
+DBSCAN 参数扫描、PCA/t-SNE/UMAP 降维和绘图保存都必须使用 `tqdm` 展示进度。
 
 ## 可视化要求
 
