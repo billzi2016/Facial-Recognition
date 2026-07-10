@@ -87,7 +87,7 @@ ArcFace shows local directions across several regions, which matches the many-cl
 
 ![HOG feature grid](outputs/report/hog_feature_grid.jpg)
 
-This figure shows what the HOG baseline looks at during detection. HOG divides an image into small cells and records the strongest grayscale change direction in each cell. Face outlines, eyes, nose bridges, and mouths create local direction patterns that a traditional detector can match. This is different from ArcFace embeddings: ArcFace learns identity-oriented deep features, while HOG describes local edge structure.
+This figure shows what the HOG baseline looks at during detection. The yellow marks are not arrows with a forward direction. They are unsigned orientation-bin line segments: HOG cares about edge orientation, not whether the edge points left or right. When several bins in one cell have strong gradient responses, the cell can look like a small star of overlapping line segments. Face outlines, eyes, nose bridges, and mouths create dense local orientation histograms that a traditional detector can match. This is different from ArcFace embeddings: ArcFace learns identity-oriented deep features, while HOG describes local edge structure.
 
 ## Conclusion
 

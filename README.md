@@ -117,6 +117,8 @@ Experiment notes:
 - [experiments/faiss/README.md](https://github.com/billzi2016/Facial-Recognition/blob/main/experiments/faiss/README.md)
 - [experiments/dbscan/README.md](https://github.com/billzi2016/Facial-Recognition/blob/main/experiments/dbscan/README.md)
 
+In the report, the HOG feature figure uses yellow line segments for unsigned orientation bins. They are not arrows with a forward direction. If several bins respond inside one cell, the cell can look like a small star of overlapping line segments.
+
 ## More documentation
 
 The full documentation source is in `docs-site/`. Chinese source documents use `.zh.md`; English files use the plain `.md` name.

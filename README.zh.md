@@ -175,3 +175,5 @@ python3 experiments/dbscan/sweep_dbscan_eps.py \
 - ArcFace 与 HOG 两套 DBSCAN 聚类标签。
 - ArcFace 与 HOG 两套 PCA / t-SNE / UMAP 2D JPG 可视化图。
 - benchmark 报告。
+
+报告中的 HOG 特征图使用黄色短线表示 unsigned orientation bin，不是带正反方向的箭头。一个 cell 里多个方向 bin 同时有响应时，会出现类似星形的叠加线段；这表示局部边缘方向直方图较复杂。

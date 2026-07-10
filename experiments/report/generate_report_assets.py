@@ -195,16 +195,17 @@ def plot_celeba_identity_examples(metadata: list[dict[str, str]]) -> None:
     save_figure(OUTPUT_DIR / "celeba_identity_examples.jpg")
 
 
-def compute_hog_cell_vectors(image: np.ndarray, cell_size: int = 12) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """计算 HOG 风格的局部梯度方向。
+def compute_hog_segments(image: np.ndarray, cell_size: int = 6, bins: int = 9) -> tuple[np.ndarray, list[tuple[float, float, float, float, float]]]:
+    """计算更接近真实 HOG 的 cell 方向线段。
 
-    HOG 的核心不是直接记住像素，而是在小网格里统计边缘朝向。这里为了报告可读性，
-    对每个 cell 计算一个“平均方向”：
-    - Sobel 算子得到每个像素的 x/y 梯度。
-    - 梯度幅值越大，对方向平均的贡献越大。
-    - 方向使用 unsigned orientation，也就是 0 到 180 度；一条边向左或向右都表示同一条边。
+    HOG 的一个 cell 不是只有一根平均箭头，而是一组方向直方图。常见设置会把
+    0 到 180 度切成 9 个 unsigned orientation bin，并把像素梯度幅值累加到对应 bin。
+    这里把每个 cell 中较强的 bin 画成短线段，所以视觉上会比单箭头版本密得多。
 
-    返回值直接给 Matplotlib quiver 使用。
+    返回的每条线段包含：
+    - 起点 x/y
+    - 终点 x/y
+    - 当前 bin 强度，用来控制透明度
     """
 
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
@@ -215,30 +216,35 @@ def compute_hog_cell_vectors(image: np.ndarray, cell_size: int = 12) -> tuple[np
     magnitude = np.sqrt(grad_x * grad_x + grad_y * grad_y)
     angle = np.mod(np.arctan2(grad_y, grad_x), np.pi)
 
-    xs: list[float] = []
-    ys: list[float] = []
-    us: list[float] = []
-    vs: list[float] = []
-    strengths: list[float] = []
+    bin_width = np.pi / bins
+    bin_angles = (np.arange(bins, dtype=np.float32) + 0.5) * bin_width
+    segments: list[tuple[float, float, float, float, float]] = []
 
     for y in range(0, gray.shape[0] - cell_size + 1, cell_size):
         for x in range(0, gray.shape[1] - cell_size + 1, cell_size):
             cell_mag = magnitude[y : y + cell_size, x : x + cell_size]
-            if float(cell_mag.sum()) <= 0.02:
+            if float(cell_mag.sum()) <= 0.01:
                 continue
             cell_angle = angle[y : y + cell_size, x : x + cell_size]
-            # unsigned orientation 要按 2 * angle 做圆周平均，否则 1 度和 179 度会被错误抵消。
-            mean_cos = float((np.cos(2 * cell_angle) * cell_mag).sum())
-            mean_sin = float((np.sin(2 * cell_angle) * cell_mag).sum())
-            mean_angle = 0.5 * np.arctan2(mean_sin, mean_cos)
-            strength = float(cell_mag.mean())
-            xs.append(x + cell_size / 2)
-            ys.append(y + cell_size / 2)
-            us.append(np.cos(mean_angle) * strength)
-            vs.append(np.sin(mean_angle) * strength)
-            strengths.append(strength)
+            hist = np.zeros(bins, dtype=np.float32)
+            bin_indices = np.minimum((cell_angle / bin_width).astype(np.int32), bins - 1)
+            np.add.at(hist, bin_indices.ravel(), cell_mag.ravel())
+            if float(hist.max()) <= 0:
+                continue
 
-    return gray, np.asarray(xs), np.asarray(ys), np.asarray(us), np.asarray(vs)
+            # 只画相对较强的方向 bin。弱 bin 全画出来会变成噪声底纹，不利于读者观察。
+            threshold = max(float(hist.max()) * 0.24, float(hist.sum()) * 0.06)
+            center_x = x + cell_size / 2
+            center_y = y + cell_size / 2
+            for strength, theta in zip(hist, bin_angles, strict=True):
+                if float(strength) < threshold:
+                    continue
+                length = cell_size * (0.30 + 0.55 * min(float(strength / hist.max()), 1.0))
+                dx = np.cos(theta) * length / 2
+                dy = np.sin(theta) * length / 2
+                segments.append((center_x - dx, center_y - dy, center_x + dx, center_y + dy, float(strength)))
+
+    return gray, segments
 
 
 def plot_hog_feature_grid(metadata: list[dict[str, str]]) -> None:
@@ -252,16 +258,21 @@ def plot_hog_feature_grid(metadata: list[dict[str, str]]) -> None:
     same_person, different_people = choose_example_rows(metadata)
     examples = (same_person + different_people)[:6]
 
-    fig, axes = plt.subplots(2, 3, figsize=(12, 8), dpi=150)
+    fig, axes = plt.subplots(2, 3, figsize=(14, 9.5), dpi=300)
     for ax, item in zip(axes.flat, examples, strict=True):
         image = load_rgb_image(item["path"])
-        gray, xs, ys, us, vs = compute_hog_cell_vectors(image)
+        gray, segments = compute_hog_segments(image)
         ax.imshow(gray, cmap="gray")
-        ax.quiver(xs, ys, us, -vs, color="#f2c14e", angles="xy", scale_units="xy", scale=0.08, width=0.004)
+        if segments:
+            strengths = np.asarray([segment[4] for segment in segments], dtype=np.float32)
+            max_strength = float(strengths.max()) if strengths.size else 1.0
+            for x0, y0, x1, y1, strength in segments:
+                alpha = 0.22 + 0.62 * min(strength / max_strength, 1.0)
+                ax.plot([x0, x1], [y0, y1], color="#f2c14e", linewidth=0.38, alpha=alpha)
         ax.set_title(f"id={item['person_id']} | {item['split']}\n{item['image_id']}", fontsize=9)
         ax.axis("off")
 
-    fig.suptitle("HOG local gradient directions, 6 CelebA faces, 3 columns x 2 rows")
+    fig.suptitle("Dense HOG orientation bins, cell=6, 9 unsigned bins, 6 CelebA faces")
     save_figure(OUTPUT_DIR / "hog_feature_grid.jpg")
 
 
