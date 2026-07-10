@@ -36,6 +36,8 @@ HOG：
 python3 experiments/faiss/run_faiss_experiment.py --route hog
 ```
 
+脚本默认使用 `--top-k 5`。报告里的 `Top-K(k=5)` 指每张 query 返回最相似的 5 个 gallery 候选，只要正确身份出现在这 5 个候选里就算 Top-K 命中。
+
 小样本验证可以限制 query 数量：
 
 ```bash
@@ -60,14 +62,14 @@ outputs/faiss/<route>/threshold_report.csv
 outputs/faiss/<route>/benchmark.json
 ```
 
-`known_search_results.csv` 用来计算 Top-1 和 Top-K 命中率。`unknown_search_results.csv` 和 `threshold_report.csv` 用来分析陌生人拒识。
+`known_search_results.csv` 用来计算 Top-1 和 Top-K(k=5) 命中率。`unknown_search_results.csv` 和 `threshold_report.csv` 用来分析陌生人拒识。
 
 ## 结果判断
 
 正常结果应该满足：
 
 - gallery 数量大于 0。
-- known query 有 Top-1 和 Top-K 结果。
+- known query 有 Top-1 和 Top-K(k=5) 结果。
 - unknown query 单独统计，不混进 known accuracy。
 - benchmark 记录 embedding 维度、index 类型、score 方式和耗时。
 - ArcFace 和 HOG 都有独立输出目录。

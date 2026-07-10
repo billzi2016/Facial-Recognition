@@ -29,7 +29,7 @@ Both experiments must include ArcFace and HOG. The report cannot present ArcFace
 ## Required artifacts
 
 - Embedding benchmark tables for both routes
-- FAISS Top-1 and Top-5 tables for both routes
+- FAISS Top-1 and Top-K(k=5) tables for both routes
 - Unknown rejection threshold results for both routes
 - DBSCAN cluster summary for both routes
 - PCA, t-SNE, and UMAP JPG plots for both routes

@@ -1,0 +1,16 @@
+{
+  "route": "hog",
+  "embedding_file": "outputs/hog/embeddings.h5",
+  "metadata_file": "outputs/hog/embedding_metadata.csv",
+  "embedding_dim": 128,
+  "index_type": "IndexFlatIP",
+  "score": "cosine_similarity_after_l2_normalize",
+  "top_k": 5,
+  "known_queries": 168034,
+  "unknown_queries": 20105,
+  "top1_accuracy": 0.7142423557137246,
+  "topk_accuracy": 0.8210600235666591,
+  "known_score_mean": 0.9532229449063337,
+  "unknown_score_mean": 0.9362531700646572,
+  "elapsed_seconds": 0.6610107920132577
+}

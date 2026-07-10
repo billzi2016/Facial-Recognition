@@ -7,9 +7,9 @@
 ## 目标
 
 - 分别构建 HOG 128 维 FAISS 索引和 ArcFace 512 维 FAISS 索引。
-- 完成熟人 query 的 Top-K 检索。
+- 完成熟人 query 的 Top-K(k=5) 检索。
 - 完成陌生人 query 的阈值拒识测试。
-- 输出检索延迟、Top-1 准确率、Top-K 命中率和拒识率。
+- 输出检索延迟、Top-1 准确率、Top-K(k=5) 命中率和拒识率。
 - 分别输出 ArcFace 主路线 report 和 HOG baseline report，并在综合报告中做对比。
 
 ## 非目标
@@ -59,7 +59,9 @@ IndexFlatIP
 4. 读取 `query_known` 执行熟人检索。
 5. 读取 `query_unknown` 执行陌生人拒识。
 6. 对不同阈值进行扫描。
-7. 输出 Top-K 命中率、错误匹配样本和拒识结果。
+7. 输出 Top-K(k=5) 命中率、错误匹配样本和拒识结果。
+
+默认 `K=5`，对应脚本参数 `--top-k 5`。如果后续实验调整 K，报告必须同时写明新的 K 值。
 
 索引构建、query 检索和阈值扫描都必须使用 `tqdm` 展示进度。
 
@@ -73,7 +75,8 @@ IndexFlatIP
 ## 指标
 
 - `top1_accuracy`
-- `top5_accuracy`
+- `topk_accuracy`
+- `top_k`
 - `false_accept_rate`
 - `false_reject_rate`
 - `unknown_reject_rate`

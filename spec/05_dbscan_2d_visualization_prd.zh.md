@@ -28,15 +28,20 @@
 
 ## 输出
 
-- `outputs/dbscan/hog_cluster_labels.csv`
-- `outputs/dbscan/insightface_cluster_labels.csv`
-- `outputs/dbscan/hog_pca_2d.jpg`
-- `outputs/dbscan/hog_tsne_2d.jpg`
-- `outputs/dbscan/hog_umap_2d.jpg`
-- `outputs/dbscan/insightface_pca_2d.jpg`
-- `outputs/dbscan/insightface_tsne_2d.jpg`
-- `outputs/dbscan/insightface_umap_2d.jpg`
-- `outputs/dbscan/cluster_report.json`
+- `outputs/dbscan/hog/cluster_labels.csv`
+- `outputs/dbscan/hog/cluster_report.json`
+- `outputs/dbscan/hog/pca_2d.jpg`
+- `outputs/dbscan/hog/tsne_2d.jpg`
+- `outputs/dbscan/hog/umap_2d.jpg`
+- `outputs/dbscan/insightface/cluster_labels.csv`
+- `outputs/dbscan/insightface/cluster_report.json`
+- `outputs/dbscan/insightface/pca_2d.jpg`
+- `outputs/dbscan/insightface/tsne_2d.jpg`
+- `outputs/dbscan/insightface/umap_2d.jpg`
+- `outputs/dbscan/insightface_cosine_eps_sweep/eps_sweep.csv`
+- `outputs/dbscan/insightface_euclidean_eps_sweep/eps_sweep.csv`
+- `outputs/dbscan/hog_cosine_eps_sweep/eps_sweep.csv`
+- `outputs/dbscan/hog_euclidean_eps_sweep/eps_sweep.csv`
 
 ## 核心实现
 
@@ -54,17 +59,19 @@ points_umap = umap.UMAP(n_components=2, random_state=seed).fit_transform(embeddi
 
 ## DBSCAN 参数建议
 
-HOG 128 维：
+最终正式参数：
 
-- `eps`: `0.48` 到 `0.55`
-- `min_samples`: `3` 到 `5`
+- ArcFace 512 维：`metric=cosine`, `eps=0.56`, `min_samples=4`
+- HOG 128 维：`metric=euclidean`, `eps=0.40`, `min_samples=4`
 
-ArcFace 512 维：
+参数扫描必须覆盖四组组合：
 
-- `eps`: `0.40` 到 `0.48`
-- `min_samples`: `3` 到 `5`
+- ArcFace + cosine
+- ArcFace + euclidean
+- HOG + cosine
+- HOG + euclidean
 
-参数必须做扫描，不能只跑单点。
+采用或不采用不能只看 NMI。判断依据必须同时包含非噪声簇数量、噪声率、最大簇占比、ARI 和 NMI。最大簇占比用于识别是否被 DBSCAN 连成一个大簇；ARI/NMI 只用于聚类后的身份一致性评估，不参与聚类过程。
 
 DBSCAN 参数扫描、PCA/t-SNE/UMAP 降维和绘图保存都必须使用 `tqdm` 展示进度。
 

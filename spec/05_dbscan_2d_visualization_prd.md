@@ -30,11 +30,32 @@ DBSCAN must run twice:
 ## Outputs
 
 - `outputs/dbscan/insightface/cluster_labels.csv`
+- `outputs/dbscan/insightface/cluster_report.json`
 - `outputs/dbscan/hog/cluster_labels.csv`
+- `outputs/dbscan/hog/cluster_report.json`
 - `outputs/dbscan/insightface/*_2d.jpg`
 - `outputs/dbscan/hog/*_2d.jpg`
-- route specific clustering reports
+- `outputs/dbscan/insightface_cosine_eps_sweep/eps_sweep.csv`
+- `outputs/dbscan/insightface_euclidean_eps_sweep/eps_sweep.csv`
+- `outputs/dbscan/hog_cosine_eps_sweep/eps_sweep.csv`
+- `outputs/dbscan/hog_euclidean_eps_sweep/eps_sweep.csv`
 - a comparison report for the benchmark
+
+## Parameter sweep
+
+The final run uses:
+
+- ArcFace: `metric=cosine`, `eps=0.56`, `min_samples=4`
+- HOG: `metric=euclidean`, `eps=0.40`, `min_samples=4`
+
+The sweep must cover four combinations:
+
+- ArcFace + cosine
+- ArcFace + euclidean
+- HOG + cosine
+- HOG + euclidean
+
+The selection cannot rely on NMI alone. It must consider non-noise cluster count, noise rate, largest cluster share, ARI, and NMI. Largest cluster share catches collapse into one oversized cluster. ARI and NMI are used only after clustering to compare against identity labels; DBSCAN itself does not use those labels.
 
 ## Plot rule
 

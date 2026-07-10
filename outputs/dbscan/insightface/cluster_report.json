@@ -1,0 +1,18 @@
+{
+  "route": "insightface",
+  "embedding_file": "outputs/insightface/embeddings.h5",
+  "metadata_file": "outputs/insightface/embedding_metadata.csv",
+  "embedding_dim": 512,
+  "eps": 0.56,
+  "min_samples": 4,
+  "metric": "cosine",
+  "max_samples": 20000,
+  "plot_sample_size": 5000,
+  "sample_count": 20000,
+  "cluster_count_excluding_noise": 1607,
+  "noise_count": 12437,
+  "noise_rate": 0.62185,
+  "elapsed_seconds": 1.4019700419157743,
+  "adjusted_rand_index_non_noise": 0.9682715326013277,
+  "normalized_mutual_info_non_noise": 0.9956627222004825
+}

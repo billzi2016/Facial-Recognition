@@ -1,0 +1,18 @@
+{
+  "route": "hog",
+  "embedding_file": "outputs/hog/embeddings.h5",
+  "metadata_file": "outputs/hog/embedding_metadata.csv",
+  "embedding_dim": 128,
+  "eps": 0.4,
+  "min_samples": 4,
+  "metric": "euclidean",
+  "max_samples": 20000,
+  "plot_sample_size": 5000,
+  "sample_count": 20000,
+  "cluster_count_excluding_noise": 339,
+  "noise_count": 18122,
+  "noise_rate": 0.9061,
+  "elapsed_seconds": 0.5957762501202524,
+  "adjusted_rand_index_non_noise": 0.10304926851872435,
+  "normalized_mutual_info_non_noise": 0.9213164542530096
+}

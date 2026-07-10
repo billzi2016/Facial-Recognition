@@ -14,10 +14,12 @@ ArcFace is the main route. HOG is the baseline. Both routes must produce search 
 ## Goals
 
 - Build a FAISS index for the gallery split.
-- Search `query_known` and measure Top-K accuracy.
+- Search `query_known` and measure Top-K(k=5) accuracy.
 - Search `query_unknown` and measure unknown rejection.
 - Scan thresholds instead of relying on a single guessed value.
 - Write route specific outputs and a comparison summary.
+
+The default value is `K=5`, which comes from the script argument `--top-k 5`. If a later run changes K, the report must write the new value explicitly.
 
 ## Inputs
 

@@ -1,0 +1,16 @@
+{
+  "route": "insightface",
+  "embedding_file": "outputs/insightface/embeddings.h5",
+  "metadata_file": "outputs/insightface/embedding_metadata.csv",
+  "embedding_dim": 512,
+  "index_type": "IndexFlatIP",
+  "score": "cosine_similarity_after_l2_normalize",
+  "top_k": 5,
+  "known_queries": 172592,
+  "unknown_queries": 20669,
+  "top1_accuracy": 0.93041392416798,
+  "topk_accuracy": 0.9522052007045517,
+  "known_score_mean": 0.5954852051932968,
+  "unknown_score_mean": 0.2884220104983401,
+  "elapsed_seconds": 1.2507089171558619
+}

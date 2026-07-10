@@ -1,0 +1,8 @@
+route,eps,min_samples,metric,max_samples,embedding_dim,sample_count,cluster_count_excluding_noise,noise_count,noise_rate,largest_cluster_size,largest_cluster_rate,adjusted_rand_index_non_noise,normalized_mutual_info_non_noise,elapsed_seconds
+insightface,0.4,4,euclidean,20000,512,20000,0,20000,1.0,0,0.0,0.0,0.0,1.3152017081156373
+insightface,0.6,4,euclidean,20000,512,20000,0,20000,1.0,0,0.0,0.0,0.0,1.0453125829808414
+insightface,0.8,4,euclidean,20000,512,20000,0,20000,1.0,0,0.0,0.0,0.0,1.056621375028044
+insightface,1.0,4,euclidean,20000,512,20000,0,20000,1.0,0,0.0,0.0,0.0,1.0151329580694437
+insightface,1.2,4,euclidean,20000,512,20000,0,20000,1.0,0,0.0,0.0,0.0,1.0044363751076162
+insightface,1.4,4,euclidean,20000,512,20000,0,20000,1.0,0,0.0,0.0,0.0,1.0885353749617934
+insightface,1.6,4,euclidean,20000,512,20000,0,20000,1.0,0,0.0,0.0,0.0,1.033317666966468

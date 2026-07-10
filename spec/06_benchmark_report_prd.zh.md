@@ -22,10 +22,16 @@
 
 - `outputs/hog/benchmark.json`
 - `outputs/insightface/benchmark.json`
-- `outputs/faiss/benchmark.json`
-- `outputs/faiss/threshold_report.csv`
-- `outputs/dbscan/cluster_report.json`
-- `outputs/dbscan/*.jpg`
+- `outputs/faiss/hog/benchmark.json`
+- `outputs/faiss/hog/threshold_report.csv`
+- `outputs/faiss/insightface/benchmark.json`
+- `outputs/faiss/insightface/threshold_report.csv`
+- `outputs/dbscan/hog/cluster_report.json`
+- `outputs/dbscan/insightface/cluster_report.json`
+- `outputs/dbscan/hog/*.jpg`
+- `outputs/dbscan/insightface/*.jpg`
+- `outputs/dbscan/*_eps_sweep/eps_sweep.csv`
+- `outputs/report/*.jpg`
 
 ## 输出
 
@@ -49,7 +55,7 @@
 
 - HOG vs InsightFace 检测延迟对比。
 - HOG vs InsightFace 编码延迟对比。
-- FAISS Top-1、Top-5 检索准确率对比。
+- FAISS Top-1、Top-K(k=5) 检索准确率对比。
 - 陌生人拒识阈值扫描曲线。
 - HOG PCA/t-SNE/UMAP 聚类图。
 - ArcFace PCA/t-SNE/UMAP 聚类图。

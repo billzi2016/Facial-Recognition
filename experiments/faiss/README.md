@@ -36,6 +36,8 @@ HOG:
 python3 experiments/faiss/run_faiss_experiment.py --route hog
 ```
 
+The script defaults to `--top-k 5`. In the report, `Top-K(k=5)` means each query returns the five nearest gallery candidates, and the result counts as a hit if the correct identity appears anywhere in those five candidates.
+
 For a small check, limit the query counts:
 
 ```bash
@@ -60,14 +62,14 @@ outputs/faiss/<route>/threshold_report.csv
 outputs/faiss/<route>/benchmark.json
 ```
 
-`known_search_results.csv` measures Top-1 and Top-K hits. `unknown_search_results.csv` and `threshold_report.csv` measure unknown rejection.
+`known_search_results.csv` measures Top-1 and Top-K(k=5) hits. `unknown_search_results.csv` and `threshold_report.csv` measure unknown rejection.
 
 ## How to read the result
 
 A valid run should have:
 
 - at least one gallery vector
-- known query rows with Top-1 and Top-K results
+- known query rows with Top-1 and Top-K(k=5) results
 - unknown query rows reported separately
 - benchmark fields for embedding dimension, index type, score type, and elapsed time
 - separate output directories for ArcFace and HOG

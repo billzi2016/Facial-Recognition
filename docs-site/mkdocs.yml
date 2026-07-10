@@ -68,6 +68,8 @@ nav:
   - Experiments:
       - FAISS search: experiments/faiss.md
       - DBSCAN clustering: experiments/dbscan.md
+  - Reports:
+      - Experiment report: reports/report.md
   - Project:
       - MkDocs site PRD: project/mkdocs_prd.md
       - GitHub Actions PRD: project/github_action_prd.md

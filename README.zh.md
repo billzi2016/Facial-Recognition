@@ -120,8 +120,36 @@ python3 experiments/faiss/run_faiss_experiment.py --route hog
 DBSCAN 聚类与可视化：
 
 ```bash
-python3 experiments/dbscan/run_dbscan_experiment.py --route insightface
-python3 experiments/dbscan/run_dbscan_experiment.py --route hog
+python3 experiments/dbscan/run_dbscan_experiment.py --route insightface --metric cosine --eps 0.56
+python3 experiments/dbscan/run_dbscan_experiment.py --route hog --metric euclidean --eps 0.40
+```
+
+DBSCAN 参数扫描要覆盖路线和距离度量的组合。最终采用 ArcFace + cosine 和 HOG + euclidean；ArcFace + euclidean、HOG + cosine 也要保留结果，用来说明为什么不采用。
+
+```bash
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route insightface \
+  --metric cosine \
+  --eps-values 0.30,0.34,0.38,0.42,0.45,0.48,0.52,0.56,0.60,0.64,0.68 \
+  --output-dir outputs/dbscan/insightface_cosine_eps_sweep
+
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route insightface \
+  --metric euclidean \
+  --eps-values 0.40,0.60,0.80,1.00,1.20,1.40,1.60 \
+  --output-dir outputs/dbscan/insightface_euclidean_eps_sweep
+
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route hog \
+  --metric cosine \
+  --eps-values 0.12,0.16,0.20,0.24,0.28,0.32,0.36,0.40,0.44,0.48,0.52 \
+  --output-dir outputs/dbscan/hog_cosine_eps_sweep
+
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route hog \
+  --metric euclidean \
+  --eps-values 0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.00 \
+  --output-dir outputs/dbscan/hog_euclidean_eps_sweep
 ```
 
 分实验说明在：

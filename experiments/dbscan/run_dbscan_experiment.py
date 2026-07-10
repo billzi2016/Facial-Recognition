@@ -41,13 +41,15 @@ DEFAULT_ROUTES = {
         "embedding_file": "outputs/insightface/embeddings.h5",
         "metadata_file": "outputs/insightface/embedding_metadata.csv",
         "output_dir": "outputs/dbscan/insightface",
-        "eps": 0.45,
+        "eps": 0.56,
+        "metric": "cosine",
     },
     "hog": {
         "embedding_file": "outputs/hog/embeddings.h5",
         "metadata_file": "outputs/hog/embedding_metadata.csv",
         "output_dir": "outputs/dbscan/hog",
-        "eps": 0.52,
+        "eps": 0.40,
+        "metric": "euclidean",
     },
 }
 
@@ -222,7 +224,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dataset", default="embeddings")
     parser.add_argument("--eps", type=float, default=None)
     parser.add_argument("--min-samples", type=int, default=4)
-    parser.add_argument("--metric", default="cosine")
+    parser.add_argument("--metric", default=None)
     parser.add_argument("--max-samples", type=int, default=20000)
     parser.add_argument("--plot-sample-size", type=int, default=5000)
     parser.add_argument("--seed", type=int, default=42)
@@ -233,6 +235,7 @@ def parse_args() -> argparse.Namespace:
     args.metadata_file = args.metadata_file or Path(defaults["metadata_file"])
     args.output_dir = args.output_dir or Path(defaults["output_dir"])
     args.eps = args.eps if args.eps is not None else float(defaults["eps"])
+    args.metric = args.metric if args.metric is not None else str(defaults["metric"])
     return args
 
 

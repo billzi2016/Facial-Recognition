@@ -24,16 +24,64 @@ Both routes must run. The report compares cluster count, noise rate, and plot st
 
 ## Run
 
-ArcFace:
+ArcFace final clustering and 2D plots, using cosine:
 
 ```bash
-python3 experiments/dbscan/run_dbscan_experiment.py --route insightface
+python3 experiments/dbscan/run_dbscan_experiment.py \
+  --route insightface \
+  --metric cosine \
+  --eps 0.56
 ```
 
-HOG:
+HOG final clustering and 2D plots, using euclidean:
 
 ```bash
-python3 experiments/dbscan/run_dbscan_experiment.py --route hog
+python3 experiments/dbscan/run_dbscan_experiment.py \
+  --route hog \
+  --metric euclidean \
+  --eps 0.40
+```
+
+ArcFace uses cosine distance. HOG uses euclidean distance. Their embedding distributions are different, so DBSCAN parameters should not be shared blindly.
+
+ArcFace + cosine sweep. This is the sweep used to choose the ArcFace final setting:
+
+```bash
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route insightface \
+  --metric cosine \
+  --eps-values 0.30,0.34,0.38,0.42,0.45,0.48,0.52,0.56,0.60,0.64,0.68 \
+  --output-dir outputs/dbscan/insightface_cosine_eps_sweep
+```
+
+ArcFace + euclidean sweep. This is recorded as a control, but it is not used because the tested range produced all noise:
+
+```bash
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route insightface \
+  --metric euclidean \
+  --eps-values 0.40,0.60,0.80,1.00,1.20,1.40,1.60 \
+  --output-dir outputs/dbscan/insightface_euclidean_eps_sweep
+```
+
+HOG + cosine sweep. This is recorded as a control, but it is not used because the tested range collapses into one large cluster:
+
+```bash
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route hog \
+  --metric cosine \
+  --eps-values 0.12,0.16,0.20,0.24,0.28,0.32,0.36,0.40,0.44,0.48,0.52 \
+  --output-dir outputs/dbscan/hog_cosine_eps_sweep
+```
+
+HOG + euclidean sweep. This is the sweep used to choose the HOG final setting:
+
+```bash
+python3 experiments/dbscan/sweep_dbscan_eps.py \
+  --route hog \
+  --metric euclidean \
+  --eps-values 0.20,0.30,0.40,0.50,0.60,0.70,0.80,0.90,1.00 \
+  --output-dir outputs/dbscan/hog_euclidean_eps_sweep
 ```
 
 DBSCAN and t-SNE/UMAP can be slow on the full dataset. The script defaults to a controlled sample size. For full clustering, set:
